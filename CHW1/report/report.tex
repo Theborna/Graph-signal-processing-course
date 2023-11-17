@@ -4,10 +4,10 @@
 \usepackage{pgfplots}
 \usepackage{circuitikz}
 \usepackage{capt-of}
-\title{آزمایشگاه تبدیل انرژی الکتریکی 1}
-\prof{دکتر ذوالقدری}
-\subtitle{مدار های مغناطیسی}
-\subject{پیش گزارش آزمایش اول}
+\title{پردازش سیگنال های گرافی}
+\prof{دکتر آرش امینی}
+% \subtitle{مدار های مغناطیسی}
+\subject{تمرین کامپیوتری سری اول}
 \department{مهندسی برق}
 \info{
     \begin{tabular}{lr}
@@ -21,108 +21,10 @@
 \maketitlepage
 \maketitlestart
 
-\section{قسمت اول}
-
-\textbf{
-	1.
-	در مدار مغناطیسی شکل زیر، اگر سیمپیچ با منبع جریان DC تغذیه شود؛ با فرض ناچیز بودن مقاومت سیم-
-	پیچی و ثابت بودن شار هسته، رابطهی بین آمپر دور و شار را با فرض
-	$l_g=0, l_g\neq 0$
-	بدست آورید و با هم مقایسه
-	کنید.
+\foreach \x in {1,2}{
+    \input{questions/Q\x.tex}
+    \clearpage
 }
-
-\begin{figure}[h]
-	\centering
-	\includegraphics*[width=0.3\linewidth]{result/1.png}
-\end{figure}
-
-کافیست مدار مغناطیسی معادل را در نظر بگیریم و معادلات سیستم را حل کنیم.
-
-\begin{wrapfigure}{l}{0.4\textwidth}
-	\centering
-	\begin{circuitikz}
-		\draw (0,0)
-		to [short, i=$\Phi$] (4,0)
-		to [R, l=$R_g$] (4,-3)
-		to [R, l=$R_c$] (0,-3)
-		to [voltage source, l=$\mathcal{F}(Ni)$] (0,0);
-	\end{circuitikz}
-	\caption{مدار مغناطیسی}
-\end{wrapfigure}
-
-\begin{align*}
-	F   & = R\Phi = (R_c + R_g)\Phi = Ni                               \\
-	R_c & = \frac{l_c}{\mu_r\mu_0 A}                                   \\
-	R_g & = \frac{l_g}{\mu_0 A_g}                                      \\
-	Ni  & = \frac{1}{\mu_0}(\frac{l_c}{\mu_r A}+\frac{l_g}{A_g})\Phi =
-	\begin{cases}
-		\frac{l_c}{\mu_r\mu_0 A}\Phi                             & l_g = 0   \\
-		\frac{1}{\mu_0}(\frac{l_c}{\mu_r A}+\frac{l_g}{A_g})\Phi & l_g\neq 0
-	\end{cases}
-\end{align*}
-
-به صورتی که $l_c$ طول موثر هسته است، $\mu_r$ ضریب گذردهی نسبی، $A$ مساحت موثر هسته،
-$A_g$ مساحت موثر گپ هوایی با در نظر گرفتن اثراتی مانند fringing و $l_g$ فاصله هوایی است.
-
-
-میتوان دید که با افزایش فاصله هوایی، شار گذرنده به شدت کاهش می یابد.
-
-\clearpage
-
-\section{قسمت دوم}
-
-\textbf{
-	2.
-	اگر هسته فرومغناطیسی فوق دارای حلقه H-B به شکل زیر باشد، وجود فاصله هوایی چه تاثیری در مشخصه
-	مغناطیسشوندگی از دید سیمپیچی دارد؟
-}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics*[width=0.2\linewidth]{result/2.png}
-	\caption{ مشخصه مغناطیس شوندگی هسته فرومغناطیسی}
-\end{figure}
-
-از دید تئوری معادلات زیر را داریم:
-
-\vspace*{-1em}
-\begin{gather*}
-	Ni = H_cl_c+H_gl_g = H_c l_c + \frac{1}{\mu_0}\overbrace{B_g l_g}^{\frac{\Phi l_g}{A_g}} = 
-	H_c l_c + \frac{1}{\mu_0}\frac{Al_g}{A_g}B_c\\
-	Ni = H_{eff}l_c\Rightarrow H_{eff} = H_c(B_c) + \frac{Al_g}{\mu_0A_gl_c}B_c = H_{eff}
-\end{gather*}
-
-همینطور که از معادلات واضح است، وجود گپ هوایی باعث میشود در چگالی شار ثابت، میدان معناطیسی بیشتری داشته باشیم، 
-
-در نتیجه انگار بطور افقی کشیده تر میشود مشخصه مغناطیسشوندگی معادل از دید سیم پیچ، و موجب کاهش 
-شیب هیسترزیس میشود.
-
-\section{قسمت سوم}
-
-\textbf{
-	3.
-	 اگر سیمپیچی شکل 1 با ولتاژ سینوسی تغذیه شود، انتظار دارید شکل موج جریان عبوری از سیمپیچی چه
-	شکلی داشته باشد؟
-}
-
-اگر اثرات غیرخطی سیستم را در نظر نگیریم، معادلات به شکل زیر هستند: 
-
-\vspace*{-1em}
-\begin{align*}
-	V&=V_m\cos(\omega t)=-N\frac{d\Phi}{dt}\Rightarrow \Phi = \frac{V_m}{N\omega}\sin(\omega t)=\frac{F}{R}=\frac{Ni}{R}\\
-	i&=\frac{V_m}{N^2\omega}R\sin(\omega t)=\frac{V_m}{N^2\omega}\left(\frac{1}{\mu_0}(\frac{l_c}{\mu_r A}+\frac{l_g}{A_g})\right)\sin(\omega t)
-\end{align*}
-
-پس جریان نیز یک جریان سینوسی ولی با اختلاف فاز 90 درجه خواهد بود، اثرات غیرخطی مانند هیسترزیس موجب مقداری اعوجاج 
-در جریان شده در نتیجه این جریان دارای هارمونیک های بالاتر نیز خواهد بود در حالت کلی.
-\footnote{عکس از تمرین سری دوم بدست آمده است}
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics*[width=0.8\linewidth]{result/res2.png}
-\end{figure}
-
 % \makeendpage
 \end{document}
 
