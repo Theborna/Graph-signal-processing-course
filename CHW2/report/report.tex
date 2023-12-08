@@ -1,0 +1,30 @@
+\documentclass[11pt]{article}
+\usepackage[bordered]{uni-style}
+\usepackage{wrapfig}
+\usepackage{pgfplots}
+\usepackage{circuitikz}
+\usepackage{capt-of}
+\title{پردازش سیگنال های گرافی}
+\prof{دکتر آرش امینی}
+% \subtitle{مدار های مغناطیسی}
+\subject{تمرین کامپیوتری سری دوم}
+\department{مهندسی برق}
+\info{
+    \begin{tabular}{lr}
+        برنا خدابنده & 400109898\\
+    \end{tabular}
+}
+\date{\today}
+\usepackage{xepersian}
+\settextfont{Yas}
+\begin{document}
+\maketitlepage
+\maketitlestart
+
+\foreach \x in {1,2}{
+    \input{questions/Q\x.tex}
+    \clearpage
+}
+% \makeendpage
+\end{document}
+
