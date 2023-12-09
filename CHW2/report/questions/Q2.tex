@@ -1,0 +1,62 @@
+\section{گروە بندی به وسیله سیگنال های گرافی}
+
+\subsection{ساخت گراف}
+
+مانند تمرین اول، این گراف را تولید میکنیم، با قرار دادن گراف در یک embedding مربوط به
+بردار ویژه دوم و سوم، گراف زیر را میبینیم.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=0.7\linewidth]{../results/Q2/orig_clusters.png}
+	\vspace*{-2em}
+\end{figure}
+
+\subsection{ساخت سیگنال نرم}
+
+حال با استفاده از گرافی که در قسمت قبل ساختیم، تعداد $t$ سیگنال نرم را با استفاده از یک فیلتر FIR با درجه $r$ میسازیم.
+فیلتر ما به صورت $\mathcal{H}(L_G)=(1-\alpha L_G)^{r-1}$ تعریف شده است، و $t$ سیگنال نویز سفید را از این فیلتر رد میکنیم تا سیگنال های نرم را بدست آوریم.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=0.7\linewidth]{../results/Q2/smooth_signal.png}
+	\vspace*{-2em}
+	\caption{
+		یکی از سیگنال ها بر روی گراف
+	}
+	\label{fig:smooth_sig}
+\end{figure}
+
+همانطور که از شکل \ref*{fig:smooth_sig} پیداست، این سیگنال های نرم میتوانند به خودی خود طبقه بندی خوبی انجام دهند،
+و دیدی به گروه بندی ها به ما میدهند، حال سعی میکنیم با این سیگنال ها، گروه بندی انجام دهیم و
+ساختار گراف را پیدا کنیم.
+
+\clearpage
+
+\subsection{تخمین لاپلاسی}
+
+سیگنال های تصادفی، $x$ طی یک فرایند تصادفی تولید شده اند و گوسی سفید است، \lr{spectral density} این سیگنال بدین صورت است که:
+\begin{gather*}
+        \Sigma_x=I_n=U\sigma^2IU^H=U\text{diag}(\mathbf{1}_n)U^H \\
+        \Sigma_y = U\text{diag}(\mathbf{1}_n\cdot |h|^2)U^H=U\text{diag}(|h|^2)U^H=\mathcal{H}^2\\
+        \mathcal{H}L=L\mathcal{H}
+\end{gather*}
+در نتیجه، بردار ویژه های ماتریس کوواریانس، همان بردار ویژه های ماتریس لاپلاسی هستند و میتوان با استفاده از 
+آن تخمین زد. فقط باید دقت کنیم که ترتیب مقادیر ویژه در $\mathcal{H}$، برعکس ترتیب آن در $L$ است پس ترتیب سیگنال ویژه ها نیز برعکس در می آید.
+
+سپس بعد از تخمین بردار ویژه ها، همان مراحل \lr{spectral clustering} را انجام میدهیم.
+\subsection{گروه بندی}
+
+حال با بردار وِیژه های تخمین زده شده، embedding جدیدی برای سیگال ها پیدا میکنیم و گروه بندی را با استفاده از k-means انجام میدهیم.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics*[width=\linewidth]{../results/Q2/clustering.png}
+    \includegraphics*[width=\linewidth]{../results/Q2/clustering-3d.png}
+    \caption{گروه بندی با استفاده از 2 بردار ویژه اول(بالا) و با 3 بردار ویژه اول(پایین)}
+    \label{fig:clustering}
+\end{figure}
+
+همانطور که از \ref*{fig:clustering} پیداست، این گروه بندی با دقت بسیار بالا انجام میشود.
+
+استفاده از 2 مثدار ویژه اول نیز کفایت میکند، در حالت کلی پیدا کردیم که برای طبقه بندی $k$ کلاسه، 
+استفاده از $k-1$ بردار ویژه اول برای embedding کافی است.

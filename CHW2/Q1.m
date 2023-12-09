@@ -94,7 +94,7 @@ filt_L =  [1 1 0 0 0 0 0 0]';
 filt_Wn = [0 0 0 0 0 0 1 1]';
 
 % Plotting
-figure('Position', [100, 100, 800, 400]);
+figure('Position', [100, 100, 1000, 400]);
 
 subplot(1, 2, 1);
 stem_filter(G.e, filt_L, 'Laplacian Filter');
@@ -147,36 +147,38 @@ sgtitle('Signal, Noisy Signal and Filtered Signals', 'FontSize', 16);
 %% Part 7: Calculate SNR
 % snr calculated in previous part. shown on graphs
 %% Part 8: Best FIR fit
-n = 5;
+n = 3;
 S123_L = G.e .^ (0:n-1);
 S123_Wn =  Gn.e .^ (0:n-1);
 h_L = pinv(S123_L) * filt_L;
+h_L
 FIR_L = S123_L * h_L;
 h_Wn = pinv(S123_Wn) * filt_Wn;
+h_Wn
 FIR_Wn = S123_Wn * h_Wn;
 
 % Plotting
-figure('Position', [100, 100, 800, 400]);
+figure('Position', [100, 100, 1000, 400]);
 
 subplot(1, 2, 1);
 stem(G.e, FIR_L, 'LineWidth', 1.5, 'DisplayName', 'FIR_L');
 hold on;
-stem(G.e, filt_L, 'LineWidth', 1.5, 'DisplayName', 'Perfect Filter');
+stem(G.e, filt_L, 'LineWidth', 1.5, 'DisplayName', 'Ideal Filter');
 hold off;
 xlabel('Eigenvalue');
 ylabel('Amplitude');
-title('FIR Filter vs Perfect Filter (Laplacian)');
+title('FIR Filter vs Ideal Filter (Laplacian)');
 legend('Location', 'northeast');
 grid on;
 
 subplot(1, 2, 2);
 stem(Gn.e, FIR_Wn, 'LineWidth', 1.5, 'DisplayName', 'FIR_{Wn}');
 hold on;
-stem(Gn.e, filt_Wn, 'LineWidth', 1.5, 'DisplayName', 'Perfect Filter');
+stem(Gn.e, filt_Wn, 'LineWidth', 1.5, 'DisplayName', 'Ideal Filter');
 hold off;
 xlabel('Eigenvalue');
 ylabel('Amplitude');
-title('FIR Filter vs Perfect Filter (Norm-Weight)');
+title('FIR Filter vs Ideal Filter (Norm-Weight)');
 legend('Location', 'northwest');
 grid on;
 

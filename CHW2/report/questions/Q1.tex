@@ -1,11 +1,142 @@
 \section{کاهش نویز در سیگنال گرافی}
 
-کد ها در فایل های \texttt{Q1.m} و \texttt{Q2.m} ضمیمه شده اند، این گزارشی از نتایج شبیه سازی ها و 
+کد ها در فایل های \texttt{Q1.m} و \texttt{Q2.m} ضمیمه شده اند، این گزارشی از نتایج شبیه سازی ها و
 محسابات خواهد بود.
 
 \subsection{تولید و تعریف گراف}
 
+در حل این مسئله مکان راس ها اهمیتی ندارد، در نتیجه برای مکان این راس ها مکان های انتزاعی با استفاده از \texttt{sensor graph}
+تخصیص داده ایم.
+\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=0.55\linewidth]{../results/Q1/graph.png}
+	\vspace*{-3em}
+	\caption{رسم گراف}
+\end{figure}
+
+\subsection{تعریف سیگنال اصلی و با نویز}
+
+با استفاده از طیف لاپلاسی کراف، سیگنال اصلی $x=2u_1+u_2$ و سیگنال نویزی $x_n=x+w$ را تعریف میکنیم، در شکل زیر این
+سیگنال ها را روی گراف نمایش میدهیم.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=0.9\linewidth]{../results/Q1/sig_noisysig.png}
+	\vspace*{-2em}
+	\caption{رسم سیگنال اصلی و نویزی بر روی گراف و به صورت سری زمانی}
+\end{figure}
+
+\subsection{طیف سیگنال}
+
+حال ماتریس لاپلاسی و وزن نورمالیزه که به صورت $W_n=D^{-1/2}WD^{-1/2}$ تعریف میشنوند را تشکیل میدهیم، و سپس
+با قرار دادن آنها به عنوان اپراتور شیفت گرافی، طیف گراف را با استخراج سیگنال های ویژه این اپراتور ها و
+تجزیه سیگنال خود به این پایه ها تشکیل داده و نمایش میدهیم.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=0.9\linewidth]{../results/Q1/signal_spectra.png}
+	\vspace*{-2em}
+	\label{fig:sig_spectra}
+	\caption{
+		طیف سیگنال، فرکانس: محور افقی، نویزی و معمولی(جپ و راست)، لاپلاسی یا وزن نورمالیزه(بالا، پایین)
+	}
+\end{figure}
+
+\subsection{ساخت فیلتر}
+
+همانطور که از شکل \ref*{fig:sig_spectra} معلوم است، نگه داشتن 2 مقدار ویژه کوچک تر و بطور متقابل 2
+مقدار ویژه بزرگ تر در شیفت با وزن نورمالیزه، باید فیلتر خوبی برای این سیستم باشد، متناظر با 2 فرکانس کم و موجود در سیگنال اصلی. به طور معادل:
+\[
+	h_L(\lambda)=\left[1,1,0,\dots,0\right]^T,\qquad h_{W_n}(\lambda)=\left[0,\dots,0,1,1\right]^T
+\]
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=0.9\linewidth]{../results/Q1/ideal_filt.png}
+	\vspace*{-1em}
+	\label{fig:ideal_filt}
+	\caption{
+		فیلتر ایده آل، لاپلاسین و وزن نورمالیزه(چپ و راست)
+	}
+\end{figure}
+
+که برای پاسخ فرکانس در واقغ $h(\lambda)$ را در فرکانس های موجود در گراف رسم کرده ایم.
+
+\clearpage
+\subsection{فیلتر کردن}
+
+حال فقط سیگنال اصلی را با استفاده از فیلتر خود، فیلتر میکنیم به صورتی که:
+\[
+	x_{\text{filtered}}=U(\hat{x}\odot h),\qquad \hat{x}=U^Hx
+\]
+
 \begin{figure}[h]
 	\centering
-	\includegraphics*[keyvals]{../}
+	\includegraphics*[width=\linewidth]{../results/Q1/sig_filtsig.png}
+	\vspace*{-2em}
+	\caption{از چپ به راست: سیگنال اصلی، سیگنال نویزی، فیلتر شده با فیلتر لاپلاسی، فیلتر شده با فیلتر وزن نورمالیزه}
+	\label{fig:filtered_sig_ideal}
 \end{figure}
+
+همانطور که از شکل \ref*{fig:filtered_sig_ideal} پیداست، سیگنال های فیلتر شده دارای SNR بهبود یافته اند، و
+همچنین که بهترین نتیجه برای فیلتر کردن با استفاده از فیلتر با شیفت لاپلاسین گرافی است، زیرا
+سیگنال اصلی روی طیف این اپراتور تعریف شده است و در این حوزه هموار تر است.
+
+\[
+	\text{SNR}_{\text{default}}=11.29\longrightarrow \underline{\text{SNR}_{L}=28.4},\quad \text{SNR}_{W_n}=19.72
+\]
+
+\subsection{سنتز با FIR}
+
+میخواهیم که پاسخ این 2 فیلتر تا حد ممکن مشابه هم باشد، از معیار $l_2$ برای این خطا استفاده میکنیم.
+\begin{gather*}
+	|x_{ideal}-x_{fir}|^2=|\hat{x}_{ideal}-\hat{x}_{fir}|^2=\hat{x}^2|h_{ideal}-h_{fir}|^2\Rightarrow h_{fir,opt}=\underset{h\in\text{FIR}}{\mathrm{argmin}}|h_{ideal}-h|^2
+\end{gather*}
+ادامه محسابات در صفحه بعد.
+\begin{figure}[h]
+	\centering
+	\includegraphics*[width=\linewidth]{../results/Q1/FIR_filt.png}
+	\vspace*{-1em}
+	\caption{
+		فیلتر FIR در مقابل ایده آل، لاپلاسین و وزن نورمالیزه(چپ و راست)
+	}
+	\label{fig:fir_filt}
+\end{figure}
+
+\clearpage
+
+\begin{gather*}
+	h_{FIR}(\lambda)=h_0+h_1\lambda+h_2\lambda^2,\quad \lambda=\left[\lambda_1,\lambda_2,\dots,\lambda_n\right]^T\\
+	h_{FIR} =
+	\underbrace{\begin{pmatrix}
+			\lambda^0 & \lambda^1 & \lambda^2
+		\end{pmatrix}}_{\Lambda_3}\begin{pmatrix}
+		h_0 \\h_1\\h_2
+	\end{pmatrix}\\
+	h_{opt}=\underset{h\in\text{FIR}}{\mathrm{argmin}}|h_{ideal}-h|^2=\Lambda_3\underset{x}{\mathrm{argmin}}|h_{ideal}-\Lambda_3x|^2=\Lambda_3\Lambda_3^\dagger h_{ideal}\\
+	\left(h_0,h_1,h_2\right)^T=\Lambda_3^\dagger h_{ideal}\\
+	h_{opt}:\text{\lr{projecting $h_{ideal}$ onto $\mathbb{C}(\Lambda_3)$}}
+\end{gather*}
+
+پس طبق روابط بالا میتوانیم فیلتر FIR با طول دلخواه را پیدا کنیم که کمترین فاصله با فیلتر ایده آل را بسازد، در شکل \ref{fig:fir_filt} این فیلتر با طول 3 را نمایش داده ایم،
+برای این فیلتر:
+\[
+	h_{L,0}=1.1685,\quad h_{L,1}=-0.4237,\quad h_{L,2}=0.0370\quad h_{W_n,0}=0.1568,\quad h_{W_n,1}=0.6164,\quad h_{W_n,2}=0.3743
+\]
+
+\subsection{فیلتر کردن با FIR}
+حال با فیلتر هایی که در قسمت قبل ساختیم، فیلتر میکنیم.
+\begin{figure}[h]
+	\centering
+	\includegraphics*[width=\linewidth]{../results/Q1/FIR-filtering.png}
+	\vspace*{-2em}
+	\caption{از چپ به راست: سیگنال اصلی، سیگنال نویزی، فیلتر شده با فیلتر لاپلاسی، فیلتر شده با فیلتر وزن نورمالیزه}
+	\label{fig:filtered_sig_FIR}
+\end{figure}
+
+همانطور که پیداست، SNR در شکل \ref*{fig:filtered_sig_ideal} بسیار بهتر از \ref*{fig:filtered_sig_FIR} که انتظار میرفت،
+با اقزایش طول فیلتر FIR ولی این فاصله کمتر و کمتر میشود.
+
+\[
+	\text{SNR}_{\text{default}}=7.635\longrightarrow \underline{\text{SNR}_{ّFIR,L}=13.48},\quad \text{SNR}_{FIR,W_n}=12.33
+\]

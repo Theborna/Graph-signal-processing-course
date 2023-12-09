@@ -52,7 +52,7 @@ num_r_values = numel(r_values);
 figure('Position', [100, 100, 1400, 600]);
 
 hold on;
-
+dim = k;
 for i = 1:num_r_values
     r = r_values(i);
     accuracy = zeros(numel(t_values), 1);
@@ -84,7 +84,7 @@ ylim([0, 1.1]);
 
 xlabel('t');
 ylabel('Accuracy');
-title('Clustering Accuracy vs. t for different r values');
+title('Clustering Accuracy vs. t for different r values', ['dim: ', num2str(dim-1)]);
 legend('Location', 'best');
 grid on;
 hold off;
@@ -119,7 +119,7 @@ function [clusters, U] = run_single_experiment(G, t, r, k, dim)
     % here we forget we actually have the graph
     covarience = cov(X_smooth', 1);
     [U, ~] = eigen(covarience);
-
+    
     % Part 3.2: Finding clusters
     % set coordinates as eigenvectors
     coords = U(:, 2:max(dim, 3));
