@@ -1,0 +1,129 @@
+\section{جداسازی سیگنال گرافی}
+
+کد ها و نتایج شبیه سازی ضمیمه شده اند و در گزارش تکرار نشده اند.
+
+\subsection{سیگنال نرم تصادفی}
+
+ابتدا تعدادی گراف به صورت گراف سنسور تولید میکنیم، و با تحلیل های مناسب روی آنها، سیگنال های تصادفی ولی نرم بر روی این گراف ها تولید میکنیم.
+
+\begin{minipage}{0.6\linewidth}
+	حال کافیست از هر کدام از این گراف ها، ماتریس لاپلاسین مربوطه $L_i$ را استخراج کرده، و سیگنال ادقام شده از سیگنال های نرم
+	$x_i$ قبل که به صورت $x=\sum_{k=1}^{K}x_k$ را با استفاده از مسئله بهینه سازی زیر، جداسازی کنیم.
+
+	\[
+		\min_{x_1,\dots,x_k}\sum_{i=1}^{K} x_i^TL_ix_i\quad
+		s.t.\begin{cases}
+			x=\sum_{i=1}^{K}x_i,   \\
+			1^Tx_i=0 & i=1,\dots,k
+		\end{cases}
+	\]
+
+	این بهینه سازی، جداسازی خوبی انجام میدهد، زیرا هر کدام از $x_i$ ها تنها بر روی $L_i$ هموار هستند، در نتیجه میدانیم برای پاسخ اصلی، این تابع هدف مقدار کوچکی دارد.
+	حال به هر روشی که این مسئله را حل کنیم، به پاسخ مطلوبی میرسیم.
+
+	در این گزارش، ما با استفاده از \texttt{CVX} مسئله را حل کرده ایم.
+\end{minipage}
+\begin{minipage}{0.4\linewidth}
+	\centering
+	\includegraphics*[width=\linewidth]{../results/sample_sensor_graph.png}
+	\captionof{figure}{نمونه گراف سنسور}
+\end{minipage}
+\vspace*{1em}
+
+پس از انجام تحلیل ها، از معیار SNR برای سنجش عمل کرد استفاده کرده ایم، مقادیر برای یک آزمایش به صورت زیر بوده.
+
+
+\begin{minipage}{0.6\linewidth}
+	\vspace*{1em}
+	\centering
+	\begin{latin}
+		\begin{tabular}{c|c|c|c|c}
+			\textbf{$\text{SNR}_1$} & \textbf{$\text{SNR}_2$} & \textbf{$\text{SNR}_3$} & \textbf{$\text{SNR}_4$} & \textbf{$\text{SNR}_{avg}$} \\
+			\hline
+			30.21                   & 21.31                   & 11.26                   & 17.77                   & 20.14
+		\end{tabular}
+		\captionof{table}{SNR Values (db)}
+	\end{latin}
+\end{minipage}
+\begin{minipage}{0.4\linewidth}
+	\begin{gather*}
+		\text{SNR}_i = 10\log\left(\frac{||x_i||^2_2}{||x_i|-\tilde{x}_i|^2_2}\right)\\
+		\text{SNR}_{avg} = \frac{1}{K}\sum_{i=1}^{K}\text{SNR}_i
+	\end{gather*}
+\end{minipage}
+\vspace*{1em}
+
+برای اطمینان بیشتر روی مقادیر و کاهش واریانس اندازه گیری، آزمایش را 20 بار انجام داده، و میانگین را گزارش میکنیم. سپس مرحله قبل را برای ابعاد مختلف سیگنال نیز انجام میدهیم.
+
+مقادیر به شکل زیر بوده اند.
+
+\vfil
+
+\begin{latin}
+	\centering
+	\begin{tabular}{c|c|c|c}
+		\textbf{N}   & 100   & 200   & 300   \\
+		\hline
+		\textbf{SNR} & 14.65 & 15.96 & 17.58 \\
+	\end{tabular}
+	\captionof{table}{SNR Values (db) vs dimentionality}
+\end{latin}
+
+\clearpage
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=0.8\linewidth]{../results/SNR_Part6.png}
+\end{figure}
+
+\subsection{جداسازی تصویر}
+
+ابتدا 2 تصویر داده شده را در محیط متلب لوود کرده و به فرمت مورد نظر برای تحلیل های خود میاوریم، سپس سیگنال ناشی از ادقام این 2 تصویر را میسازیم.
+
+\vfil
+
+\begin{figure}[h]
+	\centering
+	\includegraphics*[width=\linewidth]{../results/faces.png}
+	\caption{تصاویر و تصویر ادقام شده}
+\end{figure}
+
+حال نیاز داریم مراحل قبل را باری دیگر طی کنیم، با این تقاوت که در قبل، گراف ها معلوم بوده و سپس سیگنال های تصادفی همواری روی گراف های
+دانسته شده تعریف کردیم.
+
+در اینجا تصاویر معلوم اند، در نتیجه برای اعمال کار مشابه نیاز داریم گرافی تولید کنیم که سیگنال ها بر روی آن هموار باشند.
+
+\clearpage
+
+گراف خود را یک گراف $king's$ در نظر میگیریم، که اینگونه شباهت های مکانی را در گراف خود میبینیم، و برای خاص کردن گراف برای سیگنال خود،
+وزن ها را به صورت زیر قرار میدهیم.
+
+\[
+	w_{k, ij}=\frac{1}{|(x_k)_i-(x_k)_j|+\epsilon},\quad (i, j)\in\mathcal{E}(\text{kings}),\quad 0<\epsilon<1
+\]
+
+در اینجا از $\epsilon=0.001$ استفاده کردیم.
+
+برای اثبات ادعا خود روی همواری سیگنال ها روی گراف مربوطه، 500 مولفه فرکانسی اول سیگنال ها را روی گراف خود رسم میکنیم.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics*[width=0.9\linewidth]{../results/gft_smoothness.png}
+	\caption{تبدیل فوریه گرافی GFT با ماتریس لاپلاسین به عنوان GSO}
+\end{figure}
+
+\subsection{جداسازی}
+
+حال با مراحل مشابهی، جداسازی را انجام میدهیم، همانطور که معلوم است، این جداسازی به صورت خیلی خوبی انجام شده و عکس ها
+به نحو خوبی جدا شده اند.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=\linewidth]{../results/bss_faces.png}
+	\vspace*{-4em}
+	\caption{بازسازی و جداسازی روی تصاویر}
+    \vspace*{-1em}
+	\[
+		\text{SNR}_1 = 15.34dB,\quad \text{SNR}_2=15.92dB
+	\]
+\end{figure}
